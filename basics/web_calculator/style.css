@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.calculator-container {
+    display: flex;
+    gap: 30px;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.calculator {
+    width: 400px;
+}
+
+.display {
+    margin-bottom: 20px;
+}
+
+.display input {
+    width: 100%;
+    height: 80px;
+    font-size: 32px;
+    text-align: right;
+    padding: 0 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #f8f9fa;
+    font-family: monospace;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    padding: 20px;
+    font-size: 24px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.number {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.operator {
+    background: #ff9800;
+    color: white;
+}
+
+.func {
+    background: #607d8b;
+    color: white;
+}
+
+.equals {
+    background: #4caf50;
+    color: white;
+    grid-column: span 4;
+}
+
+.history-panel {
+    width: 300px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-panel h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#historyList {
+    flex: 1;
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.history-item {
+    background: white;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    border-left: 3px solid #ff9800;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.history-empty {
+    color: #999;
+    text-align: center;
+    padding: 20px;
+}
+
+.clear-history {
+    padding: 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.clear-history:hover {
+    background: #c82333;
+}
