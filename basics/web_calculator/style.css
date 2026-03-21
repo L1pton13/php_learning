@@ -41,6 +41,7 @@ body {
     border-radius: 10px;
     background: #f8f9fa;
     font-family: monospace;
+    transition: font-size 0.2s ease;
 }
 
 .buttons {
