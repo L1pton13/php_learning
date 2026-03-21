@@ -1,2 +1,2 @@
 # php_learning
-This repository is my road to php developer
+Easy web-projects using php
