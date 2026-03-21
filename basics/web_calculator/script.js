@@ -1,6 +1,8 @@
 const display = document.getElementById('currentInput');
 const numberButtons =  document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
+const funcButtons = document.querySelectorAll('.func');
+const dotButton = document.querySelector('.dot');
 
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -8,6 +10,21 @@ numberButtons.forEach(button => {
     });
 });
 
+dotButton.addEventListener('click', () => {
+    const currentValue = display.value;
+    const parts = currentValue.split(/[+\-*/^]/);
+    const lastPart = parts[parts.length - 1];
+
+    if (!lastPart.includes('.')){
+        if (lastPart === ''){
+            display.value += '0.';
+        }
+        else {
+            display.value += '.'
+        }
+    }
+    
+});
 operatorButtons.forEach(button => {
     button.addEventListener('click', () => {
         const op = button.dataset.op;
@@ -39,6 +56,26 @@ operatorButtons.forEach(button => {
         }
         else{
             display.value += op;
+        }
+    });
+});
+
+funcButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const action = button.dataset.action;
+
+        switch (action){
+            case 'backspace':
+                display.value = display.value.slice(0, -1);
+                break;
+            case 'c':
+                display.value = '';
+                break;
+            case 'ac':
+                display.value = '';
+                break;
+            default:
+                break;
         }
     });
 });
