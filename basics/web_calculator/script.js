@@ -127,26 +127,28 @@ funcButtons.forEach(button => {
 });
 
 equalsBtn.addEventListener('click', () => {
-    if (!display.value) return;
+    const expression = display.value;
+    if (!expression) return;
 
     const formData = new FormData();
-    formData.append('expr', display.value);
+    formData.append('expr', expression);
 
     fetch('calc.php', {
         method: 'POST',
         body: formData
     })
-    .then(res => res.json)
+    .then(res => res.json())
     .then(data => {
         if (data.status === 'success'){
-            addToHistory(expression, result);
+            addToHistory(expression, data.result);
             display.value = data.result;
             updateFontSize();
         }
         else {
             alert(data.message);
         }
-    });
+    })
+    .catch(err => console.error("Ошибка запроса:", err));
 });
 
 clearHistoryBtn.addEventListener('click', () => {

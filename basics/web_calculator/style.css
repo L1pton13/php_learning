@@ -108,10 +108,15 @@ body {
     flex: 1;
     max-height: 500px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     margin-bottom: 15px;
 }
 
 .history-item {
+    display: inline-block;
+    width: max-content;
+    min-width: 100%;
     background: white;
     padding: 10px;
     margin-bottom: 8px;
@@ -119,6 +124,7 @@ body {
     border-left: 3px solid #ff9800;
     font-family: monospace;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
 .history-empty {
