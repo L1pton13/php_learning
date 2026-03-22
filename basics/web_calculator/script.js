@@ -3,6 +3,8 @@ const numberButtons =  document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
 const funcButtons = document.querySelectorAll('.func');
 const dotButton = document.querySelector('.dot');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const equalsBtn = document.getElementById('equals');
 
 function updateFontSize() {
     const length = display.value.length;
@@ -146,3 +148,8 @@ equalsBtn.addEventListener('click', () => {
         }
     });
 });
+
+clearHistoryBtn.addEventListener('click', () => {
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = '<div class="history-empty">Нет операций</div>';
+})
