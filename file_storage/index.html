@@ -642,19 +642,29 @@ function renderFileList(items, path) {
     return;
   }
 
-  list.innerHTML = items.map(item => {
+  // Очищаем список
+  list.innerHTML = '';
+
+  items.forEach(item => {
     const icon = item.type === 'dir' ? '📁' : fileIcon(item.mime);
     const size = item.size !== null ? formatSize(item.size) : '';
     const arrow = item.type === 'dir' ? '<span class="dir-arrow">›</span>' : '';
-    return `<li onclick="onItemClick(${JSON.stringify(item)})" data-path="${item.path}">
+
+    const li = document.createElement('li');
+    li.dataset.path = item.path;
+    li.innerHTML = `
       <span class="icon">${icon}</span>
       <span class="info">
         <div class="name">${escHtml(item.name)}</div>
         <div class="meta">${size ? size + ' · ' : ''}${item.modified}</div>
       </span>
       ${arrow}
-    </li>`;
-  }).join('');
+    `;
+
+    // Вешаем обработчик клика напрямую через JS — никакого JSON в HTML
+    li.addEventListener('click', () => onItemClick(item));
+    list.appendChild(li);
+  });
 }
 
 function onItemClick(item) {
@@ -783,7 +793,8 @@ async function doPut() {
   }
 
   logReq('PUT', `/files/${selectedFile.path}`,
-    `Content-Type: ${mime}\nContent-Length: ${body.byteLength}`, null);
+  `Content-Type: ${mime}`,
+  putFileBytes ? '[бинарные данные]' : document.getElementById('write-content').value);
 
   try {
     const res  = await apiFetch('PUT', `/files/${selectedFile.path}`, body, mime);
@@ -875,7 +886,7 @@ async function doCopy() {
   if (!dest) { toast('Укажите путь копии', 'err'); return; }
 
   const destUrl = `${SERVER}/files/${dest}`;
-  logReq('COPY', `/files/${selectedFile.path}`, `Destination: ${destUrl}`, null);
+  logReq('COPY', `/files/${selectedFile.path}`,`Destination: ${destUrl}`, null);
 
   try {
     const res  = await apiFetch('COPY', `/files/${selectedFile.path}`, null, null, { 'Destination': destUrl });
@@ -981,19 +992,53 @@ async function apiFetch(method, url, body = null, contentType = null, extraHeade
 // ═══════════════════════════════════════════════════════
 
 function logReq(method, path, extraHeaders, body) {
-  let out = `${method} ${path} HTTP/1.1\nHost: ${location.hostname}:${location.port || 8080}\n`;
+  const now = new Date().toUTCString();
+  let out = `${method} ${path} HTTP/1.1\n`;
+  out += `Host: ${location.hostname}:${location.port || 8080}\n`;
+  out += `Date: ${now}\n`;
+  out += `User-Agent: Mozilla/5.0 FileStorageClient/1.0\n`;
+  out += `Accept: */*\n`;
+  out += `Accept-Language: ru-RU,ru;q=0.9\n`;
+  out += `Accept-Encoding: gzip, deflate\n`;
+  out += `Connection: keep-alive\n`;
+  out += `Origin: http://${location.hostname}:${location.port || 8080}\n`;
+
   if (extraHeaders) out += extraHeaders + '\n';
-  out += '\n';
+
+  // Content-Length считаем если есть тело
+  if (body) {
+    const bytes = new TextEncoder().encode(body).length;
+    out += `Content-Length: ${bytes}\n`;
+  }
+
+  out += '\n'; // пустая строка — разделитель заголовков и тела
   if (body) out += body;
+
   document.getElementById('log-req').textContent = out;
 }
 
 function logResp(status, headers, body) {
-  const statusText = {200:'OK',201:'Created',204:'No Content',400:'Bad Request',403:'Forbidden',404:'Not Found',405:'Method Not Allowed',500:'Internal Server Error'}[status] || '';
+  const statusText = {
+    200: 'OK',
+    201: 'Created', 
+    204: 'No Content',
+    400: 'Bad Request',
+    403: 'Forbidden',
+    404: 'Not Found',
+    405: 'Method Not Allowed',
+    500: 'Internal Server Error'
+  }[status] || 'Unknown';
+
   let out = `HTTP/1.1 ${status} ${statusText}\n`;
-  headers.forEach((v, k) => { out += `${k}: ${v}\n`; });
-  out += '\n';
+
+  // Все заголовки ответа
+  headers.forEach((v, k) => {
+    out += `${k}: ${v}\n`;
+  });
+
+  out += '\n'; // разделитель
   if (body) out += body;
+
   document.getElementById('log-resp').textContent = out;
 }
 
